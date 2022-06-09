@@ -19,7 +19,7 @@ const {
 } = require('botbuilder');
 
 // This bot's main dialog.
-const { EchoBot } = require('./bot');
+const { CaseMate } = require('./casemate');
 
 // Create HTTP server
 const server = restify.createServer();
@@ -68,12 +68,12 @@ const onTurnErrorHandler = async (context, error) => {
 adapter.onTurnError = onTurnErrorHandler;
 
 // Create the main dialog.
-const myBot = new EchoBot();
+const casemate = new CaseMate();
 
 // Listen for incoming requests.
 server.post('/api/messages', async (req, res) => {
     // Route received a request to adapter for processing
-    await adapter.process(req, res, (context) => myBot.run(context));
+    await adapter.process(req, res, (context) => casemate.run(context));
 });
 
 // Listen for Upgrade requests for Streaming.
@@ -84,5 +84,5 @@ server.on('upgrade', async (req, socket, head) => {
     // Set onTurnError for the CloudAdapter created for each connection.
     streamingAdapter.onTurnError = onTurnErrorHandler;
 
-    await streamingAdapter.process(req, socket, head, (context) => myBot.run(context));
+    await streamingAdapter.process(req, socket, head, (context) => casemate.run(context));
 });
