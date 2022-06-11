@@ -15,16 +15,33 @@ class CaseMate extends ActivityHandler {
         });
 
         this.onMembersAdded(async (context, next) => {
-            const membersAdded = context.activity.membersAdded;
-            const welcomeText = 'Hello and welcome!';
-            for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
-                if (membersAdded[cnt].id !== context.activity.recipient.id) {
-                    await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
-                }
-            }
+            await this.sendWelcomeMessage(context);
+            // const membersAdded = context.activity.membersAdded;
+            // const welcomeText = 'Hello and welcome!';
+            // for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
+            //     if (membersAdded[cnt].id !== context.activity.recipient.id) {
+            //         await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
+            //     }
+            // }
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
+    }
+
+    async sendWelcomeMessage(turnContext) {
+        const { activity } = turnContext;
+        for (const idx in activity.membersAdded) {
+            if (activity.membersAdded[idx].id !== turnContext.activity.recipient.id) {
+                const welcomeMessage = `Welcome to Casemate! ${ activity.membersAdded[idx].name }.`;
+                await turnContext.sendActivity(welcomeMessage);
+                await this.sendSuggestedActions(turnContext);
+            }
+        }
+    }
+
+    async sendSuggestedActions(turnContext) {
+        var reply = MessageFactory.suggestedActions(['Create New Case', 'Reply to Email', 'Create a Teams meeting'], 'Choose an option to get started');
+        await turnContext.sendActivity(reply);
     }
 }
 
