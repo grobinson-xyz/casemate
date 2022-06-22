@@ -25,7 +25,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
+      
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -53,4 +53,4 @@ jobs:
           app-name: 'casemate-web-app'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4FFF4062A6E54006A71FDE1D05511E57 }}
-          package: .
+          package: ./
