@@ -25,7 +25,11 @@ jobs:
         run: |
           npm install
           npm run build --if-present
+<<<<<<< HEAD
       
+=======
+          
+>>>>>>> 8f2e989ca913d6c4f05045a2c1269ac411fe2b42
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
