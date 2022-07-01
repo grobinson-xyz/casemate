@@ -1,9 +1,10 @@
 const { WaterfallDialog, ComponentDialog } = require('botbuilder-dialogs');
 const { ConfirmPrompt, ChoicePrompt, DateTimePrompt, NumberPrompt, TextPrompt } = require('botbuilder-dialogs');
 const { DialogSet, DialogTurnStatus } = require('botbuilder-dialogs');
-// const { MessageFactory } = require('botbuilder');
-// const { IndexCard } = require('./cards/IndexCard.js');
-// const message = MessageFactory.attachment(IndexCard);
+const { CardFactory } = require('botbuilder');
+const { MessageFactory } = require('botbuilder');
+//const { EmailCard } = require('../cards/EmailCard.js');
+
 
 const CHOICE_PROMPT = 'CHOICE_PROMPT';
 const CONFIRM_PROMPT = 'CONFIRM_PROMPT';
@@ -104,33 +105,164 @@ class ClosingEmailDialog extends ComponentDialog {
 
     async preview(step) {
         step.values.rca = step.result;
-        var msg = ` Email preview:
-        \n 
-        \n Subject: ${ step.values.title } - Tracking# ${ step.values.caseID }
-        \n Hi ${ step.values.firstName }
-        \n
-        \n
-        \n Thanks for your confirmation and partnering with me on your case. Per your confirmation I'll be closing this
-        case. Please keep in mind that when your case is closed, we can reopen it at any time.
-        \n
-        \n Below, you can see the summary of your case for your records. 
-        \n
-        \n Issue: 
-        \n${ step.values.description }
-        \n 
-        \n
-        \n Outcome:
-        \n${ step.values.rca }
-        \n
-        \n
-        \n
-        \n I appreciate your time working together to resolve this issue. If you have any feedback or concerns on the handling of your case, please feel free to reach out to my Priscilla Morales at prmoral@microsoft.com, or listed below in my signature.
-
-        \n Your feedback is important to us. After this interaction, you will receive a separate closure email with an opportunity to tell us about your experience.
-        \n
-        \n We wish you the best with your future development! 
-        \n Thanks again,
-        \n`;
+        const EmailCard = CardFactory.adaptiveCard({
+            type: 'AdaptiveCard',
+            body: [
+                {
+                    type: 'TextBlock',
+                    size: 'Medium',
+                    weight: 'Bolder',
+                    text: `${ step.values.title } - Tracking# ${ step.values.caseID }`
+                },
+                {
+                    type: 'ColumnSet',
+                    columns: [
+                        {
+                            type: 'Column',
+                            items: [
+                                {
+                                    type: 'TextBlock',
+                                    weight: 'Bolder',
+                                    text: `To: ${ step.values.email }`,
+                                    wrap: true
+                                },
+                                {
+                                    type: 'TextBlock',
+                                    spacing: 'None',
+                                    text: 'From: garobins@microsoftsupport.com',
+                                    isSubtle: true,
+                                    wrap: true
+                                }
+                            ],
+                            width: 'stretch'
+                        }
+                    ]
+                },
+                {
+                    type: 'TextBlock',
+                    text: `Hi ${ step.values.firstName },\n \nMy name is Gary and I am from the App Services team. I can further assist you with troubleshooting your migrating your app service.  I have listed all of my backups and my managers contact information in my signature.\n\n`,
+                    wrap: true
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Issue Description:',
+                    wrap: true,
+                    weight: 'Bolder',
+                    color: 'Accent'
+                },
+                {
+                    type: 'RichTextBlock',
+                    inlines: [
+                        {
+                            type: 'TextRun',
+                            text: `${ step.values.description }`
+                        }
+                    ]
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Troubleshooting:',
+                    wrap: true,
+                    weight: 'Bolder',
+                    color: 'Accent'
+                },
+                {
+                    type: 'RichTextBlock',
+                    inlines: [
+                        {
+                            type: 'TextRun',
+                            text: `${ step.values.rca }`
+                        }
+                    ]
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Next Steps/Action Plan:',
+                    wrap: true,
+                    weight: 'Bolder',
+                    color: 'Accent'
+                },
+                {
+                    type: 'RichTextBlock',
+                    inlines: [
+                        {
+                            type: 'TextRun',
+                            text: 'For now kindly review information above and let me know if you have more questions and concerns on how to accomplish this.  If you have already tried and are receiving some sort of error please reply with an error message and screenshots of what you are running into. '
+                        }
+                    ]
+                },
+                {
+                    type: 'Container'
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Best Regards,',
+                    wrap: true
+                },
+                {
+                    type: 'Container'
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Gary D. Robinson',
+                    wrap: true,
+                    color: 'Accent',
+                    weight: 'Bolder'
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Support Engineer',
+                    wrap: true,
+                    weight: 'Bolder'
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Azure App Services',
+                    wrap: true
+                },
+                {
+                    type: 'TextBlock',
+                    text: '+1 (980) 776-2148',
+                    wrap: true
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'garobins@microsoft.com',
+                    wrap: true
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'Team Manager | Priscilla Morales | prmoral@microsoft.com ',
+                    wrap: true
+                },
+                {
+                    type: 'TextBlock',
+                    text: 'My normal working hours are Monday -Friday 8am-5pm US-Eastern Time.',
+                    wrap: true,
+                    size: 'Small',
+                    weight: 'Bolder'
+                },
+                {
+                    type: 'TextBlock',
+                    text: '\'Our mission is to empower every person and every organization on the planet to achieve more.\'',
+                    wrap: true,
+                    size: 'Small',
+                    color: 'Accent',
+                    weight: 'Bolder'
+                }
+            ],
+            actions: [
+                {
+                    type: 'Action.OpenUrl',
+                    title: 'Send',
+                    url: 'https://google.com'
+                }
+            ],
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            version: '1.3'
+        });
+        const message = MessageFactory.attachment(EmailCard);
+        var msg = message;
         await step.context.sendActivity(msg);
         return await step.prompt(CONFIRM_PROMPT, 'Are you sure you all values are correct and you want to create this case?', ['yes', 'no']);
     }

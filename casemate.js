@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 const { ActivityHandler, MessageFactory } = require('botbuilder');
-const { IndexCard } = require('./cards/IndexCard.js');
-const message = MessageFactory.attachment(IndexCard);
+// const { IndexCard } = require('./cards/IndexCard.js');
+// const message = MessageFactory.attachment(IndexCard);
 
 const { CreateNewCaseDialog } = require('./componentDialogs/createNewCaseDialog');
 const { ClosingEmailDialog } = require('./componentDialogs/closingEmailDialog');
