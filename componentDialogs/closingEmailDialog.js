@@ -260,7 +260,7 @@ class ClosingEmailDialog extends ComponentDialog {
         });
         const message = MessageFactory.attachment(EmailCard);
         var msg = message;
-        await step.prompt(CONFIRM_PROMPT, 'Are you sure you all values are correct and you want to create this case?', ['yes', 'no']);
+        // await step.prompt(CONFIRM_PROMPT, 'Are you sure you all values are correct and you want to create this case?', ['yes', 'no']);
         return await step.context.sendActivity(msg);
     }
 
