@@ -3,9 +3,6 @@ const { ConfirmPrompt, ChoicePrompt, DateTimePrompt, NumberPrompt, TextPrompt } 
 const { DialogSet, DialogTurnStatus } = require('botbuilder-dialogs');
 const { CardFactory } = require('botbuilder');
 const { MessageFactory } = require('botbuilder');
-//const { EmailCard } = require('../cards/EmailCard.js');
-
-
 const CHOICE_PROMPT = 'CHOICE_PROMPT';
 const CONFIRM_PROMPT = 'CONFIRM_PROMPT';
 const TEXT_PROMPT = 'TEXT_PROMPT';
@@ -263,8 +260,8 @@ class ClosingEmailDialog extends ComponentDialog {
         });
         const message = MessageFactory.attachment(EmailCard);
         var msg = message;
-        await step.context.sendActivity(msg);
-        return await step.prompt(CONFIRM_PROMPT, 'Are you sure you all values are correct and you want to create this case?', ['yes', 'no']);
+        await step.prompt(CONFIRM_PROMPT, 'Are you sure you all values are correct and you want to create this case?', ['yes', 'no']);
+        return await step.context.sendActivity(msg);
     }
 
     async emailconfirmation(step) {
