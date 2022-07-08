@@ -7,6 +7,7 @@ const { ActivityHandler, MessageFactory } = require('botbuilder');
 
 const { CreateNewCaseDialog } = require('./componentDialogs/createNewCaseDialog');
 const { ClosingEmailDialog } = require('./componentDialogs/closingEmailDialog');
+const { InitialResponseDialog } = require('./componentDialogs/initialResponseDialog');
 
 class CaseMate extends ActivityHandler {
     constructor(conversationState, userState) {
@@ -16,6 +17,7 @@ class CaseMate extends ActivityHandler {
         this.dialogState = conversationState.createProperty('dialogState');
         this.createNewCaseDialog = new CreateNewCaseDialog(this.conversationState, this.userState);
         this.closingEmailDialog = new ClosingEmailDialog(this.conversationState, this.userState);
+        this.initialResponseDialog = new InitialResponseDialog(this.conversationState, this.userState);
         this.previousIntent = this.conversationState.createProperty('previousIntent');
         this.conversationData = this.conversationState.createProperty('conversationData');
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
@@ -59,7 +61,7 @@ class CaseMate extends ActivityHandler {
 
     async sendSuggestedActions(turnContext) {
         // var reply = await turnContext.sendActivity(message);
-        var reply = MessageFactory.suggestedActions(['Create New Case', 'Closing Email'], 'Chose an Option to get started.');
+        var reply = MessageFactory.suggestedActions(['Create New Case', 'Closing Email', 'Initial Response'], 'Chose an Option to get started.');
         await turnContext.sendActivity(reply);
     }
 
@@ -90,6 +92,15 @@ class CaseMate extends ActivityHandler {
             await this.conversationData.set(context, { endDialog: false });
             await this.closingEmailDialog.run(context, this.dialogState);
             conversationData.endDialog = await this.closingEmailDialog.isDialogComplete();
+            if (conversationData.endDialog) {
+                await this.sendSuggestedActions(context);
+            }
+            break;
+        case 'Initial Response':
+            console.log('Inside Initial Response dialog');
+            await this.conversationData.set(context, { endDialog: false });
+            await this.initialResponseDialog.run(context, this.dialogState);
+            conversationData.endDialog = await this.initialResponseDialog.isDialogComplete();
             if (conversationData.endDialog) {
                 await this.sendSuggestedActions(context);
             }
