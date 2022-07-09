@@ -117,7 +117,7 @@ class InitialResponseDialog extends ComponentDialog {
     }
 
     async preview(step) {
-        step.values.rca = step.result;
+        step.values.action_plan = step.result;
         const EmailCard = CardFactory.adaptiveCard({
             type:'AdaptiveCard',
             $schema:'http://adaptivecards.io/schemas/adaptive-card.json',
@@ -232,7 +232,7 @@ class InitialResponseDialog extends ComponentDialog {
                   inlines:[
                      {
                         type:'TextRun',
-                        text: `${ step.values.troubleshooting } \nFor now kindly review information above and let me know if you have more questions and concerns`
+                        text: `${ step.values.action_plan } \nFor now kindly review information above and let me know if you have more questions and concerns`
                      }
                   ],
                   separator:true,
